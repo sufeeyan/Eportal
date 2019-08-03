@@ -1,0 +1,496 @@
+
+{% load i18n %}
+{% load static %}
+{% load taxed_prices %}
+{% load get_product_image_thumbnail from product_images %}
+{% load placeholder %}
+
+
+{% load bootstrap_field from bootstrap4 %}
+{% load build_absolute_uri from urls %}
+{% load get_object_properties from attributes %}
+{% load get_thumbnail from product_images %}
+{% load get_product_image_thumbnail from product_images %}
+{% load i18n %}
+{% load markdown from markdown %}
+{% load placeholder %}
+{% load static %}
+{% load taxed_prices %}
+
+{% load bootstrap_field from bootstrap4 %}
+{% load build_absolute_uri from urls %}
+{% load get_object_properties from attributes %}
+{% load get_thumbnail from product_images %}
+{% load get_product_image_thumbnail from product_images %}
+{% load i18n %}
+{% load markdown from markdown %}
+{% load placeholder %}
+{% load static %}
+{% load taxed_prices %}
+
+
+{% load bootstrap_field from bootstrap4 %}
+
+
+{% for product, availability in products|slice:":4" %}
+  <div class="col-6 col-lg-3 product-list my_products" id="noob" style="height:auto;width:auto;">
+
+    <a href="{{ product.get_absolute_url }}" class="link--clean">
+      <div class="text-center">
+        <div>
+          <span class="product-list-item-name d-flex justify-content-center" title="{{ product.translated }}" style="text-transform:uppercase;color:#3ee7cd;">{{ product.translated }}</span>
+          <div class="product-image" style="top:0;">
+            <img class="img-responsive lazyload lazypreload"
+                 data-src="{% get_product_image_thumbnail product.get_first_image method="thumbnail" size=255 %}"
+                 data-srcset="{% get_product_image_thumbnail product.get_first_image method="thumbnail" size=255 %} 1x, {% get_product_image_thumbnail product.get_first_image method="thumbnail" size=510 %} 2x"
+                 alt=""
+                 src="{% placeholder size=255 %}">
+            </div>
+
+
+
+
+
+
+          {% if availability.available %}
+        {% if show_variant_picker %}
+          <div id="variant-price-component"></div>
+        {% else %}
+          <h3 class="product__info__price w-100 " style="font-size:16px; padding-top:10px;">
+
+            <span>{% price_range availability.price_range %}</span>
+            {% if availability.on_sale %}
+              <small style="font-size:13px;" class="product__info__price__undiscounted">
+                {% price availability.price_range_undiscounted %}
+              </small>
+            {% endif %}
+            {% if availability.price_range_local_currency %}
+              <br>
+              <small style="font-size:10px;" class="text-info">
+                &asymp;
+                {% price availability.price_range_local_currency %}
+              </small>
+            {% endif %}
+            <small><del><span style="margin-left:1%;font-size:11px;">₹{{ product.translated.Max_Price }}</span></del></small>
+            {% if request.taxes %}
+              <small>
+                {% tax_rate request.taxes product.tax_rate as tax_rate %}
+                {% if site.settings.display_gross_prices %}
+                  {% blocktrans trimmed with tax_rate=tax_rate context "Product details page vat rate value" %}
+                    including {{ tax_rate }}% VAT
+                  {% endblocktrans %}
+                {% else %}
+                  {% blocktrans trimmed with tax_rate=tax_rate context "Product details page vat rate value" %}
+                    excluding {{ tax_rate }}% VAT
+                  {% endblocktrans %}
+                {% endif %}
+              </small>
+            {% endif %}
+          </h3>
+        {% endif %}
+      {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           </a>
+<hr width="100%" align="center" id="hr" style="display:block;margin-top:-1%;">
+  <div class="row w-100 ml-1" style="margin-top:-7%;">
+              <div class="form-group col-lg-6 col-sm-6 col-md-6 col-sm-12 col-xs-12 d-flex justify-content-center" style="padding-left:0px;">
+               <button type="button" class="button btn d-inline" data-toggle="modal" style="width:100px;padding:3px 0;" data-target="#product_view_{{ forloop.counter }}"><span style="width:auto;" data-title="QuickView"><i class="fas fa-eye"></i></span></button>
+              </div>
+              <div class="form-group col-lg-6 col-sm-12 col-md-6 col-xs-12 d-flex justify-content-center" style="padding-right:0px;">
+<!--               <button type="button" class="btn btn-primary d-inline" style="width:40px;padding:3px 0;" ><i class="fas fa-heart"></i></button>-->
+<button type="button" class="button btn d-inline" style="width:100px;padding:3px 0;"><span data-title="Wishlist"><i class="fas fa-heart"></i></span></button>
+              </div>
+
+    </div>
+        </div>
+        <div class="panel-footer">
+          {% if availability.available %}
+            {% if availability.on_sale %}
+              {% if availability.taxed_prices_undiscounted.start != availability.taxed_prices.start %}
+                <div class="product-list__sale">
+                  <svg data-src="{% static "images/sale-bg.svg" %}" />
+                  <span class="product-list__sale__text">
+                    {% comment %}Translators: Layout may break if character length is different than four.{% endcomment %}
+                    {% trans "Sale" context "Sale (discount) label for item in product list" %}
+                  </span>
+                </div>
+              {% endif %}
+            {% endif %}
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+      </div>
+
+    <div class="modal fade product_view myproduct" id="product_view_{{ forloop.counter}}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <a href="#" data-dismiss="modal" class="class pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+                <h3 class="modal-title" align="center">{{ product.category }}</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 product_img">
+<img class="img-responsive lazyload lazypreload"
+                 data-src="{% get_product_image_thumbnail product.get_first_image method="thumbnail" size=255 %}"
+                 data-srcset="{% get_product_image_thumbnail product.get_first_image method="thumbnail" size=255 %} 1x, {% get_product_image_thumbnail product.get_first_image method="thumbnail" size=510 %} 2x"
+                 alt=""
+                 src="{% placeholder size=255 %}">
+                    </div>
+                    <div class="col-md-6 product_content">
+                        <h2 align="left" style="text-transform:uppercase;">{{ product.name }}</h2>
+                      <!--price-->
+
+                      <div align="left">
+                        {% if availability.available %}
+        {% if show_variant_picker %}
+          <div id="variant-price-component"></div>
+        {% else %}
+          <h2 class="product__info__price">
+
+            <span>{% price_range availability.price_range %}</span>
+            {% if availability.on_sale %}
+              <small class="product__info__price__undiscounted">
+                {% price availability.price_range_undiscounted %}
+              </small>
+            {% endif %}
+            {% if availability.price_range_local_currency %}
+              <br>
+              <small class="text-info">
+                &asymp;
+                {% price availability.price_range_local_currency %}
+              </small>
+            {% endif %}
+            <small><del><span style="margin-left:1%;">₹{{ product.translated.Max_Price }}</span></del></small>
+            {% if request.taxes %}
+              <small>
+                {% tax_rate request.taxes product.tax_rate as tax_rate %}
+                {% if site.settings.display_gross_prices %}
+                  {% blocktrans trimmed with tax_rate=tax_rate context "Product details page vat rate value" %}
+                    including {{ tax_rate }}% VAT
+                  {% endblocktrans %}
+                {% else %}
+                  {% blocktrans trimmed with tax_rate=tax_rate context "Product details page vat rate value" %}
+                    excluding {{ tax_rate }}% VAT
+                  {% endblocktrans %}
+                {% endif %}
+              </small>
+            {% endif %}
+          </h2>
+        {% endif %}
+      {% endif %}
+                      </div>
+
+
+
+                      <!--price's end-->
+                      <ul>
+                       <li style="text-align:left;">{{ product.feature1 }}</li>
+                       <li style="text-align:left;">{{ product.feature2 }}</li>
+                       <li style="text-align:left;">{{ product.feature3 }}</li>
+                       <li style="text-align:left;">{{ product.feature4 }}</li>
+                       <li style="text-align:left;">{{ product.feature5 }}</li>
+
+                        </ul>
+
+                    <!--quantity-->
+ <form id="product-form-{{product.pk}}" role="form" class="product-form clearfix" method="post"
+      action="{% url 'product:add-to-checkout' product_id=product.pk slug=product.get_slug %}" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="variant" value={{product.pk}} id="id_variant">
+  <div class="product__info__quantity">
+    <div class="form-group">
+      <label for="id_quantity">Quantity</label>
+      <input type="number" name="quantity" value="1" min="0" max="999" class="form-control" placeholder="Quantity"
+             title="" required id="id_quantity">
+    </div>
+  </div>;
+  <div class="form-group product__info__button" style="margin-top:27px;">
+    <p>
+      <button class="btn btn-primary narrow">
+        {% trans "Add to cart" context "Product details primary action" %}
+      </button>
+    </p>
+  </div>
+</form>
+                      <!--quantity's end-->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  </div>
+{% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="row w-100 mt-5 d-flex justify-content-center">
+          <div class="col-lg-6 col-md-6 d-flex justify-content-center">
+            <img class="img-responsive w-100" src="{%  static 'images/mn.jpg'%}" width="520" height="280">
+
+          </div>
+           <div class="col-lg-6 col-md-6 d-flex justify-content-center">
+            <img class="img-responsive w-100" src="{%  static 'images/nb.jpg'%}" width="570" height="280">
+
+          </div>
+      </div>
+
+
+
+
+
+
+
+
+<div class="row w-100 d-flex justify-content-center" style="margin-top: 5%;">
+  <h2>
+    Our Top Rated Products
+  </h2>
+</div>
+
+{% for product, availability in products|slice:"4:" %}
+  <div class="col-6 col-lg-3 product-list my_products" id="noob" style="height:auto;width:auto;">
+
+    <a href="{{ product.get_absolute_url }}" class="link--clean">
+      <div class="text-center">
+        <div>
+          <span class="product-list-item-name d-flex justify-content-center" title="{{ product.translated }}" style="text-transform:uppercase;color:#3ee7cd;">{{ product.translated }}</span>
+          <div class="product-image" style="top:0;">
+            <img class="img-responsive lazyload lazypreload"
+                 data-src="{% get_product_image_thumbnail product.get_first_image method="thumbnail" size=255 %}"
+                 data-srcset="{% get_product_image_thumbnail product.get_first_image method="thumbnail" size=255 %} 1x, {% get_product_image_thumbnail product.get_first_image method="thumbnail" size=510 %} 2x"
+                 alt=""
+                 src="{% placeholder size=255 %}">
+            </div>
+
+
+
+
+
+
+          {% if availability.available %}
+        {% if show_variant_picker %}
+          <div id="variant-price-component"></div>
+        {% else %}
+          <h3 class="product__info__price w-100 " style="font-size:16px; padding-top:10px;">
+
+            <span>{% price_range availability.price_range %}</span>
+            {% if availability.on_sale %}
+              <small style="font-size:13px;" class="product__info__price__undiscounted">
+                {% price availability.price_range_undiscounted %}
+              </small>
+            {% endif %}
+            {% if availability.price_range_local_currency %}
+              <br>
+              <small style="font-size:10px;" class="text-info">
+                &asymp;
+                {% price availability.price_range_local_currency %}
+              </small>
+            {% endif %}
+            <small><del><span style="margin-left:1%;font-size:11px;">₹{{ product.translated.Max_Price }}</span></del></small>
+            {% if request.taxes %}
+              <small>
+                {% tax_rate request.taxes product.tax_rate as tax_rate %}
+                {% if site.settings.display_gross_prices %}
+                  {% blocktrans trimmed with tax_rate=tax_rate context "Product details page vat rate value" %}
+                    including {{ tax_rate }}% VAT
+                  {% endblocktrans %}
+                {% else %}
+                  {% blocktrans trimmed with tax_rate=tax_rate context "Product details page vat rate value" %}
+                    excluding {{ tax_rate }}% VAT
+                  {% endblocktrans %}
+                {% endif %}
+              </small>
+            {% endif %}
+          </h3>
+        {% endif %}
+      {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           </a>
+<hr width="100%" align="center" id="hr" style="display:block;margin-top:-1%;">
+  <div class="row w-100 ml-1" style="margin-top:-7%;">
+              <div class="form-group col-lg-6 col-sm-6 col-md-6 col-sm-12 col-xs-12 d-flex justify-content-center" style="padding-left:0px;">
+               <button type="button" class="button btn d-inline" data-toggle="modal" style="width:100px;padding:3px 0;" data-target="#product_view_{{ forloop.counter }}"><span style="width:auto;" data-title="QuickView"><i class="fas fa-eye"></i></span></button>
+              </div>
+              <div class="form-group col-lg-6 col-sm-12 col-md-6 col-xs-12 d-flex justify-content-center" style="padding-right:0px;">
+<!--               <button type="button" class="btn btn-primary d-inline" style="width:40px;padding:3px 0;" ><i class="fas fa-heart"></i></button>-->
+<button type="button" class="button btn d-inline" style="width:100px;padding:3px 0;"><span data-title="Wishlist"><i class="fas fa-heart"></i></span></button>
+              </div>
+
+    </div>
+        </div>
+        <div class="panel-footer">
+          {% if availability.available %}
+            {% if availability.on_sale %}
+              {% if availability.taxed_prices_undiscounted.start != availability.taxed_prices.start %}
+                <div class="product-list__sale">
+                  <svg data-src="{% static "images/sale-bg.svg" %}" />
+                  <span class="product-list__sale__text">
+                    {% comment %}Translators: Layout may break if character length is different than four.{% endcomment %}
+                    {% trans "Sale" context "Sale (discount) label for item in product list" %}
+                  </span>
+                </div>
+              {% endif %}
+            {% endif %}
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+      </div>
+
+    <div class="modal fade product_view myproduct" id="product_view_{{ forloop.counter}}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <a href="#" data-dismiss="modal" class="class pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+                <h3 class="modal-title" align="center">{{ product.category }}</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 product_img">
+<img class="img-responsive lazyload lazypreload"
+                 data-src="{% get_product_image_thumbnail product.get_first_image method="thumbnail" size=255 %}"
+                 data-srcset="{% get_product_image_thumbnail product.get_first_image method="thumbnail" size=255 %} 1x, {% get_product_image_thumbnail product.get_first_image method="thumbnail" size=510 %} 2x"
+                 alt=""
+                 src="{% placeholder size=255 %}">
+                    </div>
+                    <div class="col-md-6 product_content">
+                        <h2 align="left" style="text-transform:uppercase;">{{ product.name }}</h2>
+                      <!--price-->
+
+                      <div align="left">
+                        {% if availability.available %}
+        {% if show_variant_picker %}
+          <div id="variant-price-component"></div>
+        {% else %}
+          <h2 class="product__info__price">
+
+            <span>{% price_range availability.price_range %}</span>
+            {% if availability.on_sale %}
+              <small class="product__info__price__undiscounted">
+                {% price availability.price_range_undiscounted %}
+              </small>
+            {% endif %}
+            {% if availability.price_range_local_currency %}
+              <br>
+              <small class="text-info">
+                &asymp;
+                {% price availability.price_range_local_currency %}
+              </small>
+            {% endif %}
+            <small><del><span style="margin-left:1%;">₹{{ product.translated.Max_Price }}</span></del></small>
+            {% if request.taxes %}
+              <small>
+                {% tax_rate request.taxes product.tax_rate as tax_rate %}
+                {% if site.settings.display_gross_prices %}
+                  {% blocktrans trimmed with tax_rate=tax_rate context "Product details page vat rate value" %}
+                    including {{ tax_rate }}% VAT
+                  {% endblocktrans %}
+                {% else %}
+                  {% blocktrans trimmed with tax_rate=tax_rate context "Product details page vat rate value" %}
+                    excluding {{ tax_rate }}% VAT
+                  {% endblocktrans %}
+                {% endif %}
+              </small>
+            {% endif %}
+          </h2>
+        {% endif %}
+      {% endif %}
+                      </div>
+
+
+
+                      <!--price's end-->
+                      <ul>
+                       <li style="text-align:left;">{{ product.feature1 }}</li>
+                       <li style="text-align:left;">{{ product.feature2 }}</li>
+                       <li style="text-align:left;">{{ product.feature3 }}</li>
+                       <li style="text-align:left;">{{ product.feature4 }}</li>
+                       <li style="text-align:left;">{{ product.feature5 }}</li>
+
+                        </ul>
+
+                    <!--quantity-->
+ <form id="product-form-{{product.pk}}" role="form" class="product-form clearfix" method="post"
+      action="{% url 'product:add-to-checkout' product_id=product.pk slug=product.get_slug %}" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="variant" value={{product.pk}} id="id_variant">
+  <div class="product__info__quantity">
+    <div class="form-group">
+      <label for="id_quantity">Quantity</label>
+      <input type="number" name="quantity" value="1" min="0" max="999" class="form-control" placeholder="Quantity"
+             title="" required id="id_quantity">
+    </div>
+  </div>;
+  <div class="form-group product__info__button" style="margin-top:27px;">
+    <p>
+      <button class="btn btn-primary narrow">
+        {% trans "Add to cart" context "Product details primary action" %}
+      </button>
+    </p>
+  </div>
+</form>
+                      <!--quantity's end-->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  </div>
+{% endfor %}

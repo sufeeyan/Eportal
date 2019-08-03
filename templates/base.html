@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+{% load i18n %}
+{% load footer_menu menu from shop %}
+{% load placeholder %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% load translate_url from urls %}
+
+<html lang="{{ LANGUAGE_CODE }}" class="no-js" data-shipping-options-url="{% url 'checkout:shipping-options' %}" data-checkout-summary-url="{% url 'checkout:dropdown' %}">
+
+<head>
+  <title>GharBanao</title>
+  {% block meta %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Saleor">
+    <meta name="theme-color" content="#333333">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="{{ site.name }}">
+    <meta name="og:type" content="website">
+    {% get_available_languages as LANGUAGES %}
+    {% for lang_code, language_name in LANGUAGES %}
+      <link rel="alternate" hreflang="{{ lang_code }}" href="{% translate_url url=request.path lang_code=lang_code %}" />
+    {% endfor %}
+  {% endblock meta %}
+
+  {% include 'favicon.html' %}
+  {% render_bundle 'storefront' 'css' attrs='async' %}
+
+  {% block stylesheet %}{% endblock stylesheet %}
+
+  {% block meta_tags %}
+    <meta property="og:title" content="{{ site.settings.translated.header_text }}">
+    <meta property="og:description" content="{{ site.settings.translated.description }}">
+    <meta name="description" content="{{ site.settings.translated.description }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static "images/block1.png" %}">
+  {% endblock meta_tags %}
+
+  <link rel="manifest" href="{% url "manifest" %}" />
+<!--  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>-->
+<!--  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <style>
+.navigation ul .nav-item{
+padding:0 0.5rem;
+  border-left:1px solid lightgrey;
+  border-right:1px solid lightgrey;
+
+}
+
+.navigation ul .nav-item a{
+  font-weight:bold;
+
+}
+
+card:hover{
+  transform:scale(1.1);
+  transition-duration:1s;
+}
+
+#sidebar {
+    width: 422px;
+    position: fixed;
+    top: 0;
+    right: -422px;
+    height: 100vh;
+    z-index: 999;
+    background: white;
+    color: #3ee7cd;
+    transition: all 0.3s;
+    overflow-y: scroll;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+#sidebar.active {
+    right: 0;
+}
+
+#dismiss {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    background: white;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+
+#dismiss:hover {
+    background:#3ee7cd;
+    color: white;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+}
+@include media-breakpoint-up(sm) {
+  .overlay {
+    display: none !important;
+  }
+
+}
+@include media-breakpoint-up(xs) {
+
+  .overlay {
+    display: none !important;
+  }
+}
+.overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #3ee7cd;
+    color: white;
+}
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+    position: absolute;
+    top: 0;
+    right: 0;}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 998;
+  box-shadow: 5px 6px 10px #888888;
+}
+
+#myHeader{
+
+}
+
+.sticky + .content {
+  padding-top: 102px;
+}
+
+.my_products:hover{
+  border:1px solid lightgrey;
+  border-radius:10px;
+  box-shadow: 5px 6px 10px #888888;
+}
+
+  .product_view .modal-dialog{max-width: 800px; width: 100%;}
+  .pre-cost{text-decoration: line-through; color: #a5a5a5;}
+
+
+
+@media only screen and (max-width:780px){
+  .checkout__icon{
+    display:none; !important
+  }
+
+  .mynewa{
+    display:block;!important
+    }
+}
+
+*{
+	margin: 0;
+	padding: 0;
+	border: 0px none;
+}
+s
+.button{
+	display: inline-block;
+	position: absolute;
+	overflow: hidden;
+	left: 0;
+  border:1px solid #3ee7cd;
+  border-radius:20px;
+  width: 100%;
+	perspective:400px;
+	background-color: transparent;
+  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(255,255,255,0.3)));
+}
+.button span{
+	display: block;
+	position: relative;
+	transition:0.3s ease-in-out all;
+	transform-origin:50% 0;
+  transform-style:preserve-3d;
+	background-color: #3ee7cd;
+	color: white;
+  width: 100%;
+  padding-top:2px;
+  height:25px;
+
+}
+.button span:after{
+	display: block;
+	content: attr(data-title);
+	position: absolute;
+	left: 0;
+	top: 0;
+	transition:0.3s ease-in-out all;
+	transform-origin:50% 0;
+	transform:translate3d(0px,105%,0px) rotateX(-90deg);
+	background-color: white;
+	color: black;
+  width: 100%;
+}
+
+.button:hover span{
+	transform:translate3d(0px,0px,-30px) rotateX(90deg);
+}
+
+.respect{
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  font-face: sans-serif;
+  font-size: 0.5em;
+  color:#444;
+}
+
+a{
+  color:inherit;
+  text-decoration: none;
+}
+
+
+  </style>
+  <script src="https://kit.fontawesome.com/13cc41cf95.js"></script>
+</head>
+
+<body>
+{% block header %}
+<div class="overlay"></div>
+  <header class="navbar " role="navigation">
+    <div class="navbar__login container-fluid {% if user.is_impersonate %} bg-warning{% endif %}">
+      <div class=" d-none d-md-block container">
+      <div class="row">
+        <div class="col-6">
+          <p class="text-left">GharBanao</p>
+        </div>
+        <div class="col-6">
+          <ul class="float-right">
+            {% get_available_languages as LANGUAGES %}
+
+            {# We display language picker only if there're languages to pick from #}
+            {% if LANGUAGES|length > 1 %}
+              {% get_current_language as LANGUAGE_CODE %}
+              <li>
+                <div class="language-picker dropdown show">
+                  <a class="dropdown-toggle dropdown-link " id="language-picker-button">
+                    {{ LANGUAGE_CODE|language_name_local }}
+                  </a>
+                  {% include "_language_picker.html" %}
+                </div>
+              </li>
+            {% endif %}
+            {% if user.is_authenticated %}
+              {% if user.is_staff or request.impersonator.is_staff %}
+                <li>
+                  <a href="{% url "dashboard:index" %}" target="_blank" rel="noopener">
+                    {% trans "Dashboard" context "Main navigation item" %}
+                  </a>
+                </li>
+              {% endif %}
+
+             <li>
+            <a href="{% url "wishlist:user-wishlist" %}">
+            {% trans "wishlist" context "Main navigation item" %}</a>
+          </li>
+              <li>
+                <a href="{% url "account:details" %}">
+                  {% trans "Your account" context "Main navigation item" %}</a>
+              </li>
+<!--              {% if user.is_impersonate %}-->
+<!--                <li>-->
+<!--                  <a href="{% url "impersonate-stop" %}">-->
+<!--                    {% trans 'Stop impersonating' context 'Main navigation item' %}-->
+<!--                  </a>-->
+<!--                </li>-->
+<!--              {% else %}-->
+                <li>
+                  <a href="{% url "account:logout" %}">
+                    <i class="fas fa-user mr-1"></i>{% trans "Log out" context "Main navigation item" %}</a>
+                </li>
+<!--              {% endif %}-->
+            {% else %}
+              <li>
+                <a rel="nofollow" href="{% url "account:signup" %}">
+                  {% trans "Register" context "Main navigation item" %}</a>
+              </li>
+              <li>
+                <a rel="nofollow" href="{% url "account:login" %}">
+                <i class="fas fa-user mr-1"></i>{% trans "Log in" context "Main navigation item" %}
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="navbar__brand container-fluid d-block " id="myHeader">
+      <div class="container">
+        <div class="row no-gutters">
+          <div class="col-8 col-md-4 navbar__logo">
+            <div class="menu-icon-mobile d-md-none navbar__brand__menu-toggle closed open">
+              <svg data-src="{% static "images/mobile-menu.svg" %}" width="28px" height="20px"/>
+            </div>
+            <h2>GharBanao</h2>
+<!--            <a href="{% url 'home' %}">-->
+<!--              <svg data-src="{% static "images/logo-light.svg" %}"/>-->
+<!--            </a>-->
+          </div>
+          <div class="col-2 col-md-5 navbar__search static">
+            {% if SEARCH_IS_ENABLED %}
+              <div class="d-md-none mobile-search-icon ">
+<!--                <svg data-src="{% static "images/search.svg" %}" width="30" height="30"/>-->
+                <i class="fas fa-search fa-lg" style="color:black;margin-top:23px;"></i>
+              </div>
+              <form class="form-inline search-form" action="{% url "search:search" %}">
+                <div class="mobile-close-search d-md-none">
+                  <!--<svg data-src="{% static "images/close.svg" %}" width="30" height="30"/>-->
+                   <i class="fas fa-close fa-lg" style="color:black;margin-top:23px;"></i>
+                </div>
+                <input class="form-control" type="text" name="q"
+                       value="{% if query %}{{ query }}{% endif %}"
+                       placeholder="{% trans "Search for product" %}"
+                       required>
+                <button class="btn btn-primary" type="submit">
+                   <!--<svg data-src="{% static "images/search.svg" %}" width="18" height="18"/>-->
+                  <i class="fas fa-search" style="margin-top:-5px;"></i>
+                </button>
+              </form>
+            {% endif %}
+          </div>
+          <div class="col-2 col-md-3">
+<!--svg for heart icon-->
+            <!--<div class="float-center">
+                <svg class="mysvg" xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" x="0px" y="0px"
+viewBox="0 0 51.997 51.997" style="enable-background:new 0 0 51.997 51.997;" xml:space="preserve">
+<g>
+<path d="M51.911,16.242C51.152,7.888,45.239,1.827,37.839,1.827c-4.93,0-9.444,2.653-11.984,6.905
+c-2.517-4.307-6.846-6.906-11.697-6.906c-7.399,0-13.313,6.061-14.071,14.415c-0.06,0.369-0.306,2.311,0.442,5.478
+c1.078,4.568,3.568,8.723,7.199,12.013l18.115,16.439l18.426-16.438c3.631-3.291,6.121-7.445,7.199-12.014
+C52.216,18.553,51.97,16.611,51.911,16.242z M49.521,21.261c-0.984,4.172-3.265,7.973-6.59,10.985L25.855,47.481L9.072,32.25
+c-3.331-3.018-5.611-6.818-6.596-10.99c-0.708-2.997-0.417-4.69-0.416-4.701l0.015-0.101C2.725,9.139,7.806,3.826,14.158,3.826
+c4.687,0,8.813,2.88,10.771,7.515l0.921,2.183l0.921-2.183c1.927-4.564,6.271-7.514,11.069-7.514
+c6.351,0,11.433,5.313,12.096,12.727C49.938,16.57,50.229,18.264,49.521,21.261z"/>
+</g>
+
+</svg>
+            </div>-->
+            <div class="navbar__brand__checkout float-right">
+              <a rel="nofollow" class="checkout__icon" id="sidebarCollapse">
+
+<!--                <div class=" mr-5 mt-2" style="color:#3ee7cd;">-->
+<!--                  <i class="fas fa-heart fa-lg"></i>-->
+<!--                </div>-->
+
+                <div class="navbar__brand__checkout__icon" >
+                  <svg data-src="{% static "images/checkout.svg" %}" width="24" height="24"/>
+<!--                  <i class="fas fa-shopping-cart fa-2x"></i>-->
+                </div>
+                <span class="badge {% if not checkout_counter %}empty{% endif %}">
+                  {% if checkout_counter %}
+                    {{ checkout_counter }}
+                  {% else %}
+                    0
+                  {% endif %}
+                </span>
+              </a>
+              <a rel="nofollow" href="http://127.0.0.1:8000/en/checkout" style="display:none;" class="mynewa"><svg data-src="{% static "images/checkout.svg" %}" width="24" height="24"/></a>
+
+          <div id="sidebar" >
+
+            <div id="dismiss">
+                X
+            </div>
+
+            <div class="sidebar-header">
+                <h3>YOUR CART</h3>
+            </div>
+            <div class="checkout-preview-dropdown show" >
+                {% include 'checkout_dropdown.html' %}
+              </div>
+        </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="navbar__menu container d-block mt-2">
+      <nav class="navigation">
+        {% menu site_menu=site.settings.top_menu horizontal=True %}
+      </nav>
+    </div>
+  </header>
+{% endblock %}
+<div class="container ">
+  {% block topcontent %}{% endblock topcontent %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% block breadcrumb %}
+  {% endblock breadcrumb %}
+  {% block content %}
+  {% endblock content %}
+</div>
+{% block footer %}
+  <footer class="footer">
+  <div class="footer__menus">
+    <div class="container">
+      <div class="row">
+          {% footer_menu site_menu=site.settings.bottom_menu %}
+        <div class="col-md-2 col-6">
+        <ul class="menu">
+          <li class="nav-item__dropdown menu__item">
+            <a>
+              <strong>
+                {% trans "Account" %}
+              </strong>
+            </a>
+            <hr />
+            <li>
+              <a rel="nofollow" href="{% url "checkout:index" %}">
+                {% trans "Your cart" context "Main navigation item" %}
+              </a>
+            </li>
+            {% if user.is_authenticated %}
+              {% if user.is_staff %}
+                <li>
+                  <a href="{% url "dashboard:index" %}" target="_blank" rel="noopener">
+                    {% trans "Dashboard" context "Main navigation item" %}
+                  </a>
+                </li>
+
+              {% endif %}
+
+              <li>
+                <a href="{% url "account:details" %}">
+                  {% trans "Your account" context "Main navigation item" %}
+                </a>
+              </li>
+              {% if user.is_impersonate %}
+                <li>
+                  <a href="{% url "impersonate:stop" %}">
+                    {% trans 'Stop impersonating' context 'Main navigation item' %}
+                  </a>
+                </li>
+              {% else %}
+                <li>
+                  <a href="{% url "account:logout" %}">
+                    {% trans "Log out" context "Main navigation item" %}</a>
+                </li>
+              {% endif %}
+            {% else %}
+              <li>
+                <a rel="nofollow" href="{% url "account:signup" %}">
+                  {% trans "Register" context "Main navigation item" %}
+                </a>
+              </li>
+              <li>
+                <a rel="nofollow" href="{% url "account:login" %}">
+                  {% trans "Log in" context "Main navigation item" %}
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+        <div class="offset-md-2 col-md-4 col-12">
+          <div class="footer__menus__social-container">
+            <div class="footer__menus__social">
+              <a target="_blank" rel="noopener" class="social-footer" href="#">
+                <svg data-src="{% static "images/facebook-logo.svg" %}" width="45px" height="45px"/>
+              </a>
+
+              <a target="_blank" rel="noopener" class="social-footer" href="#">
+                <svg data-src="{% static "images/twitter-logo.svg" %}" width="45px" height="45px"/>
+              </a>
+              <a target="_blank" rel="noopener" class="social-footer" href="#">
+                <svg data-src="{% static "images/google-logo.svg" %}" width="45px" height="45px"/>
+              </a>
+
+              <a target="_blank" rel="noopener" class="social-footer" href="#">
+                <svg data-src="{% static "images/instagram-logo.svg" %}" width="45px" height="45px"/>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer__copy pt-1" style="padding:0;">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-sm-12">
+          <p class="footer__logo float-md-left pt-2 " align="center">
+              COPYRIGHT © 2019 PHJY iNETSOFTWARE
+          </p>
+        </div>
+        <div class="col-lg-6 col-sm-12 footer__copy-text">
+          <img class="img-responsive w-100" src="{% static 'images/yh.png' %}">
+        </div>
+      </div>
+    </div>
+  </div>
+  </footer>
+{% endblock %}
+{% block footer_scripts %}
+  <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <!-- jQuery Custom Scroller CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#sidebar").mCustomScrollbar({
+                theme: "minimal"
+            });
+
+            $('#dismiss, .overlay').on('click', function () {
+                $('#sidebar').removeClass('active');
+                $('.overlay').removeClass('active');
+            });
+
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').addClass('active');
+                $('.overlay').addClass('active');
+                $('.collapse.in').toggleClass('in');
+                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+            });
+
+
+
+
+
+        });
+
+
+
+
+
+        window.onscroll = function() {myFunction()};
+
+        var header = document.getElementById("myHeader");
+        var sticky = header.offsetTop;
+
+        function myFunction() {
+          if (window.pageYOffset > sticky) {
+            header.classList.add("sticky");
+          } else {
+            header.classList.remove("sticky");
+          }
+        }
+
+
+
+
+
+    </script>
+
+
+
+
+  {% render_bundle 'storefront' 'js' %}
+{% endblock footer_scripts %}
+{% if LANGUAGES|length > 1 %}
+  {% include "_language_picker_modal.html" %}
+{% endif %}
+</body>
+</html>
