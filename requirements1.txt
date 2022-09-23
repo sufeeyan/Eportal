@@ -90,7 +90,7 @@ Pillow==5.4.1
 premailer==3.4.1
 prices==1.0.0
 promise==2.2.1
-protobuf==3.8.0
+protobuf==3.18.3
 psycopg2-binary==2.8.2
 purl==1.5
 pyasn1==0.4.5
